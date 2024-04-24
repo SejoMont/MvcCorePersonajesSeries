@@ -1,0 +1,88 @@
+﻿@model IEnumerable<MvcCorePersonajesSeries.Models.Personaje>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<div class="dropdown">
+    <a class="btn btn-outline-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+        Series
+    </a>
+
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="seriesDropdown">
+    </ul>
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdPersonaje)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Imagen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Serie)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdPersonaje)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    <img src="@item.Imagen" style="width: 250px" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Serie)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.IdPersonaje }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.IdPersonaje }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.IdPersonaje })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Hacemos la solicitud GET a la API
+            $.get("https://apipersonajesseriessejo.azurewebsites.net/api/Personajes/GetSeries", function (data, status) {
+                // Verificamos si la solicitud fue exitosa
+                if (status === "success") {
+                    // Iteramos sobre los datos recibidos y los agregamos al desplegable
+                    data.forEach(function (item) {
+                        $('#seriesDropdown').append('<li><a class="dropdown-item" href="/Personajes/PersonajesSeries?serie=' + item + '">' + item + '</a></li>');
+                    });
+                } else {
+                    // Si la solicitud falla, mostramos un mensaje de error
+                    $('#seriesDropdown').append($('<li>', {
+                        value: '',
+                        text: 'Error al obtener datos de la API'
+                    }));
+                }
+            });
+        });
+    </script>
+}
